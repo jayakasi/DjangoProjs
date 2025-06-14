@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.urls import reverse
+from django.template.loader import render_to_string
 # Create your views here.
 
 thoughts = {
@@ -23,19 +24,18 @@ days = list(thoughts.keys())
 
 
 def index(request):
-    list_items=""
-    
-    for day in days:
-        capitalized_day = day.capitalize()
-        day_path=reverse("daily-thoughts",args=[day])
-        list_items += f"<li><a href=\"{day}\">{capitalized_day}</a></li>"
-    response_data = f"<ul>{list_items}</ul>"
-    return HttpResponse(response_data)
+    # for day in days:
+        # day_path=reverse("daily-thoughts",args=[day])
+    # list_items += f"<li><a href=\"{day_path}\">{capitalized_day}</a></li>"
+    # response_data = f"<ul>{list_items}</ul>"
+    return render(request, "tasks/index.html",{"days":days})
 
 def daily_thoughts(request, day):
     try:
         thought_of_the_day = thoughts[day]
-        return HttpResponse(thought_of_the_day)
+        return render(request, "tasks/tasks.html",{"thought":thought_of_the_day,"day":day.capitalize()})
+        # response_thought = render_to_string("tasks/tasks.html")
+        # return HttpResponse(response_thought)
     except:
         return HttpResponseNotFound("Enter a valid day to get the thought of the day")
     
